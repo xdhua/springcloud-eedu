@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: spirngcloud-api-consumer-service
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: hxd
+Implementation-Vendor-Id: com.hxd
+Build-Jdk: 1.8.0_202
+Implementation-URL: http://maven.apache.org/springcloud-api-service/sp
+ irngcloud-api-consumer-service
+Created-By: Maven Integration for Eclipse
+
