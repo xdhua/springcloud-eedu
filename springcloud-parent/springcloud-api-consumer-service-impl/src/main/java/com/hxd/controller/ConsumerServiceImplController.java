@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hxd.ConsumerService;
+import com.hxd.feign.ConsumerFeignService;
 import com.hxd.model.User;
 
 @RestController
-public class ConsumerServiceImplController {
+public class ConsumerServiceImplController implements ConsumerService {
 	
 	@Autowired
-	private ConsumerService consumerService;
+	private ConsumerFeignService consumerFeignService;
 	
 	@RequestMapping("/getName")
 	public String getName(@RequestParam("name") String name) {
@@ -21,7 +22,7 @@ public class ConsumerServiceImplController {
 		user.setName(name);
 		user.setEmail("xdhua@126.com");
 		user.setSex((byte)1);
-		return consumerService.getName(user);
+		return consumerFeignService.getName(user);
 	}
 
 }

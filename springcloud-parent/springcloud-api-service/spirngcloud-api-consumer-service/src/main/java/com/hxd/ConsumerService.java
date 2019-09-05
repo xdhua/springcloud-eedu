@@ -1,8 +1,16 @@
 package com.hxd;
 
-import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name="service-provider")
-public interface ConsumerService extends ProviderService {
+public interface ConsumerService{
+	
+	/**
+	 * 设置对外接口
+	 * @param name 接受参数
+	 * @return String
+	 */
+	@RequestMapping("/getName")
+	public String getName(@RequestParam("name") String name);
 
 }

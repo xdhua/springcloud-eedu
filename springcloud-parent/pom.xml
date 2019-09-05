@@ -34,6 +34,13 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<dependencies>
+	 <!-- hystrix断路器 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		</dependency>
+	</dependencies>
 	<modules>
 		<module>springcloud-model</module>
 		<module>springcloud-eureka-serve</module>
