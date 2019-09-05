@@ -1,11 +1,13 @@
 package com.hxd;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import com.hxd.model.User;
 
 public interface ProviderService {
 	
 	@RequestMapping("/provider/getName")
-	public String getName(@RequestParam("name") String name);
+	public String getName(@RequestBody User user);
 
 }

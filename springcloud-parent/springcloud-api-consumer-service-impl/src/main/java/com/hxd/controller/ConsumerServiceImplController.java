@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hxd.ConsumerService;
+import com.hxd.model.User;
 
 @RestController
 public class ConsumerServiceImplController {
@@ -15,8 +16,12 @@ public class ConsumerServiceImplController {
 	
 	@RequestMapping("/getName")
 	public String getName(@RequestParam("name") String name) {
-		
-		return consumerService.getName(name);
+		User user = new User();
+		user.setAge((short)18);
+		user.setName(name);
+		user.setEmail("xdhua@126.com");
+		user.setSex((byte)1);
+		return consumerService.getName(user);
 	}
 
 }
