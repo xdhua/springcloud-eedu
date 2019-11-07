@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.hxd.security.oauth2</groupId>
+	<artifactId>springboot-security</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	
+	<properties>
+		<hxd.security.verson>0.0.1-SNAPSHOT</hxd.security.verson>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- 设置spring 用版本 -->
+			<dependency>
+				<groupId>io.spring.platform</groupId>
+				<artifactId>platform-bom</artifactId>
+				<version>Cairo-SR7</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- 设置springcloud 所用版本 -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Greenwich.SR3</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<!-- 制定maven 编译版本 -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<!-- 设置编译版本 source版本 及 source编码 -->
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<!-- mybatis generator 自动生成代码插件 -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.mybatis.generator</groupId> -->
+			<!-- <artifactId>mybatis-generator-maven-plugin</artifactId> -->
+			<!-- <version>1.3.2</version> -->
+			<!-- <configuration> -->
+			<!-- <configurationFile>${basedir}/src/main/resources/generator/generatorConfig.xml</configurationFile> -->
+			<!-- <overwrite>true</overwrite> -->
+			<!-- <verbose>true</verbose> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
+		</plugins>
+	</build>
+	<modules>
+		<module>springboot-security-core</module>
+		<module>springboot-security-app</module>
+		<module>springboot-security-demo</module>
+		<module>springboot-security-broswer</module>
+	</modules>
+</project>
