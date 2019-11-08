@@ -9,9 +9,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.hxd.security.broswer.handler.FailHandler;
 import com.hxd.security.broswer.handler.SuccessHandler;
+import com.hxd.security.core.filter.ImageCodeFilter;
 import com.hxd.security.core.properties.SecurityProperties;
 
 /**
@@ -53,7 +55,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity 
+		httpSecurity
+		.addFilterBefore(new ImageCodeFilter(), UsernamePasswordAuthenticationFilter.class)  // 将自定义Filter 加在UsernamePasswordAuthenticationFilter 之前 
 		.formLogin()
 		.loginPage("/redirect/handler")  //所有没有验证的请求 都跳转到当前url中
 		.loginProcessingUrl("/test/user/login") // 替换掉默认/login post操作请求到服务器
@@ -65,7 +68,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //		.cors().and() // 跨域
 		.csrf().disable()  //解决 自定义页面不跳转问题
 		.authorizeRequests()
-		.antMatchers("/redirect/handler",securityProperties.getLoginUrl()).permitAll() // 添加不需要验证的路径
+		.antMatchers("/redirect/handler",
+				securityProperties.getLoginUrl(),
+				"/images/captcha").permitAll() // 添加不需要验证的路径
 		// 除上面外的所有请求全部需要鉴权认证
 		.anyRequest().authenticated();
 	}
