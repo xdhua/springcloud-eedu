@@ -36,7 +36,7 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		// 判断是否走自己的逻辑
+		// 当前 验证成功 是返回json 对象还是 延用 默认逻辑  进行页面跳转
 		if(securityProperties.isReturnJson()) {
 			response.setContentType("application/json;charset=UTF-8");
 			response.getWriter().write(objectMapper.writeValueAsString(authentication));
