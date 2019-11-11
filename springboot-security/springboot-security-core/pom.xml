@@ -38,11 +38,16 @@
 			<artifactId>easy-captcha</artifactId>
 			<version>1.6.2</version>
 		</dependency>
-		
-		<!--  web引用 -->
+
+		<!-- web引用 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 	</dependencies>
 

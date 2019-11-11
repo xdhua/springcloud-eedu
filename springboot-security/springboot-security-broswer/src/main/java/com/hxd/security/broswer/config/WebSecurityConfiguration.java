@@ -11,11 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import com.hxd.security.broswer.handler.FailHandler;
 import com.hxd.security.broswer.handler.SuccessHandler;
-import com.hxd.security.broswer.remberme.WebUserRemembermeTokenRepository;
 import com.hxd.security.core.filter.ImageCodeFilter;
 import com.hxd.security.core.properties.SecurityProperties;
 
@@ -56,12 +56,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	/**
-	 * 设置remberMe 的设置
+	 * 设置rememberMe 持久化实现类
 	 * @return
 	 */
 	@Bean
 	public  PersistentTokenRepository persistentTokenRepository() {
-		WebUserRemembermeTokenRepository tokenRepositoryImpl = new WebUserRemembermeTokenRepository();
+//		WebUserRemembermeTokenRepository tokenRepositoryImpl = new WebUserRemembermeTokenRepository();
+		InMemoryTokenRepositoryImpl tokenRepositoryImpl = new InMemoryTokenRepositoryImpl();
 		return tokenRepositoryImpl;
 	}
 	
@@ -82,7 +83,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.failureHandler(FailHandler) // 验证失败后操作
 			.and()
 		.rememberMe() //设置记住我
-//		.rememberMeParameter("rememberMe") // 设置请求参数 为rememberMe 默认为remember-me
+		.rememberMeParameter("rememberMe") // 设置请求参数 为rememberMe 默认为remember-me
 			.tokenRepository(persistentTokenRepository()) // 设置 记住我的持久化仓库
 			.tokenValiditySeconds(50) // 设置 记住我时间
 			.userDetailsService(userDetailsService)  // 设置获取userDetails service
