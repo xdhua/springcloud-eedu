@@ -23,9 +23,15 @@ import com.hxd.security.core.utils.CaptchaUtil;
  */
 public class ImageCodeFilter extends OncePerRequestFilter {
 	
+	/**
+	 *  图片验证码， 可以再该方法上 添加 验证 token信息 方案
+	 *  如果 当前设置 session 无效的话， 那SecurityContext 中就不存在 Authentication 信息
+	 *  那么验证就失败
+	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		//  图片验证码  是否有效
 		if(org.apache.commons.lang3.StringUtils.equals(request.getRequestURI(), "/test/user/login")) {
 			String imagecode = request.getParameter("imagecode");
 			if(CaptchaUtil.verify(imagecode)) {
