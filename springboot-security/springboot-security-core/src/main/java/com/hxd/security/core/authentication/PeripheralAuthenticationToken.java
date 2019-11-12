@@ -21,6 +21,9 @@ public class PeripheralAuthenticationToken extends AbstractAuthenticationToken {
 
 	// 当前登陆设备信息
 	private final Object peripheralName;
+	
+	// 当前登录验证码
+	private final String msg;
 
 	// ~ Constructors
 	// ===================================================================================================
@@ -29,9 +32,10 @@ public class PeripheralAuthenticationToken extends AbstractAuthenticationToken {
 	 *  设置当前登陆 设备信息
 	 * @param principal
 	 */
-	public PeripheralAuthenticationToken(Object principal) {
+	public PeripheralAuthenticationToken(Object principal, String msg) {
 		super(null);
 		this.peripheralName = principal;
+		this.msg = msg;
 		setAuthenticated(false);
 	}
 
@@ -41,9 +45,10 @@ public class PeripheralAuthenticationToken extends AbstractAuthenticationToken {
 	 * @param authorities 当前登陆人获得权限
 	 * 设置当前Authentication 已经认证通过
 	 */
-	public PeripheralAuthenticationToken(Object principal,
+	public PeripheralAuthenticationToken(Object principal, String msg,
 			Collection<? extends GrantedAuthority> authorities) {
 		super(authorities);
+		this.msg = msg;
 		this.peripheralName = principal;
 		super.setAuthenticated(true); // must use super, as we override
 	}
@@ -59,7 +64,7 @@ public class PeripheralAuthenticationToken extends AbstractAuthenticationToken {
 
 	@Override
 	public Object getCredentials() {
-		return null;
+		return this.msg;
 	}
 
 	@Override

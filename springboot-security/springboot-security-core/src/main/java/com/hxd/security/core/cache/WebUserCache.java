@@ -39,5 +39,12 @@ public interface WebUserCache {
 	 * @return
 	 */
 	Object getNativeCache();
+	
+	/**
+	 *  判断当前缓存中是否存在当前值
+	 * @param key
+	 * @return
+	 */
+	boolean containsKey(String key);
 
 }

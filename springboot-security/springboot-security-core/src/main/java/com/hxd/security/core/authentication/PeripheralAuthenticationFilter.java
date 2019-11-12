@@ -26,8 +26,13 @@ public class PeripheralAuthenticationFilter extends AbstractAuthenticationProces
 		// =====================================================================================
 
 		public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "peripheralName";
+		
+		public static final String SPRING_SECURITY_FORM_MSGCODE_KEY = "msgcode";
 
 		private String peripheralNameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
+		
+		private String peripheralMsgCodeParameter = SPRING_SECURITY_FORM_MSGCODE_KEY;
+		
 		private boolean postOnly = true;
 
 		// ~ Constructors
@@ -51,16 +56,20 @@ public class PeripheralAuthenticationFilter extends AbstractAuthenticationProces
 						"Authentication method not supported: " + request.getMethod());
 			}
 
-			String peripheralName = obtainPeripheralName(request);
+			String peripheralName = obtainParameter(request, peripheralNameParameter);
+			
+			String msgCode = obtainParameter(request, peripheralMsgCodeParameter);
 
 			if (peripheralName == null) {
 				peripheralName = "";
 			}
-
-			peripheralName = peripheralName.trim();
+			
+			if(msgCode == null) {
+				msgCode = "";
+			}
 
 			PeripheralAuthenticationToken authRequest = new PeripheralAuthenticationToken(
-					peripheralName);
+					peripheralName, msgCode);
 
 			// Allow subclasses to set the "details" property
 			setDetails(request, authRequest);
@@ -75,8 +84,8 @@ public class PeripheralAuthenticationFilter extends AbstractAuthenticationProces
 		 * @param request
 		 * @return
 		 */
-		protected String obtainPeripheralName(HttpServletRequest request) {
-			return request.getParameter(peripheralNameParameter);
+		protected String obtainParameter(HttpServletRequest request, String parameter) {
+			return request.getParameter(parameter);
 		}
 
 		/**

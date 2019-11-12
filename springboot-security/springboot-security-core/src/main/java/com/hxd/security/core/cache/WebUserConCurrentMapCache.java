@@ -49,6 +49,11 @@ public class WebUserConCurrentMapCache implements WebUserCache {
 	public Object getNativeCache() {
 		return this.store;
 	}
+
+	@Override
+	public boolean containsKey(String key) {
+		return this.store.containsKey(key);
+	}
 	
 	
 

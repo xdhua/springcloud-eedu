@@ -39,7 +39,11 @@ public class WebUserNullCache implements WebUserCache {
 	public Object getNativeCache() {
 		return null;
 	}
-	
-	
+
+	@Override
+	public boolean containsKey(String key) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

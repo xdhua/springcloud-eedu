@@ -1,9 +1,15 @@
 package com.hxd.security.core.authentication;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -18,6 +24,13 @@ import com.hxd.security.core.cache.WebUserNullCache;
  *
  */
 public class PeripheralAuthenticationProvider implements AuthenticationProvider {
+
+	protected final Log logger = LogFactory.getLog(getClass());
+
+	// ~ Instance fields
+	// ================================================================================================
+
+	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
 	private UserDetailsService userDetailsService;
 
@@ -42,14 +55,21 @@ public class PeripheralAuthenticationProvider implements AuthenticationProvider 
 		PeripheralAuthenticationToken token = (PeripheralAuthenticationToken)authentication;
 		String peripheralName = (String)token.getPrincipal();
 		UserDetails user = null;
-		user = (UserDetails)this.webUserCache.get(peripheralName);
-		if(user == null) {
+		boolean hasCaChe = this.webUserCache.containsKey(peripheralName);
+		
+		if(hasCaChe) {
+			user = (UserDetails)this.webUserCache.get(peripheralName);
+		}else {
 			user = userDetailsService.loadUserByUsername(peripheralName);
 		}
+
 		if(user == null) {
 			throw new InternalAuthenticationServiceException("用户信息验证失败");
 		}
-		PeripheralAuthenticationToken peripheralAuthenticationToken = new PeripheralAuthenticationToken(user.getUsername(),user.getAuthorities());
+		//TODO 验证当前验证码是否过期
+		
+		PeripheralAuthenticationToken peripheralAuthenticationToken = new PeripheralAuthenticationToken(user.getUsername(),user.getPassword(),user.getAuthorities());
+		this.checkNumber(user, peripheralAuthenticationToken);
 		return peripheralAuthenticationToken;
 	}
 
@@ -59,6 +79,33 @@ public class PeripheralAuthenticationProvider implements AuthenticationProvider 
 	@Override
 	public boolean supports(Class<?> authentication) {
 		return PeripheralAuthenticationToken.class.isAssignableFrom(authentication);
+	}
+
+	/**
+	 *  验证当前验证码是否通过
+	 * @param userDetails
+	 * @param authentication
+	 * @throws AuthenticationException
+	 */
+	private void checkNumber(UserDetails userDetails,
+			PeripheralAuthenticationToken authentication)
+					throws AuthenticationException {
+		if (authentication.getCredentials() == null) {
+			logger.debug("Authentication failed: no credentials provided");
+			throw new BadCredentialsException(messages.getMessage(
+					"AbstractUserDetailsAuthenticationProvider.badCredentials",
+					"Bad credentials"));
+		}
+
+		String password = authentication.getCredentials().toString();
+
+		if (StringUtils.equals(userDetails.getPassword(), password)) {
+			logger.debug("Authentication failed: password does not match stored value");
+
+			throw new BadCredentialsException(messages.getMessage(
+					"AbstractUserDetailsAuthenticationProvider.badCredentials",
+					"Bad credentials"));
+		}
 	}
 
 }
