@@ -12,14 +12,11 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hxd.security.core.properties.SecurityProperties;
-import com.hxd.security.core.utils.CaptchaUtil;
-import com.wf.captcha.base.Captcha;
 
 /**
  *   将所有请求拦截
@@ -56,10 +53,4 @@ public class RedirectController {
 		}
 		return "错误信息";
 	}
-	
-    @GetMapping("/images/captcha")
-    public void captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        CaptchaUtil.outPng(180, 34, 6, Captcha.TYPE_NUM_AND_UPPER, request, response);
-    }
-
 }

@@ -2,8 +2,6 @@ package com.hxd.security.demo.controller;
 
 import java.util.concurrent.Callable;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,14 +19,11 @@ import io.swagger.annotations.ApiParam;
 @Api(value = "/async Operations about async")
 public class AsyncController {
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
 	@RequestMapping(value = "/getName",method = RequestMethod.GET)
 	@ResponseBody
 	@ApiOperation("获取用户名------") // swagger 页面中 对当前方法进行的描述
 	public UserInfo getName(@ApiParam("用户名") @RequestParam("name") String name) {
-		System.out.println(passwordEncoder.encode(name));
 		UserInfo user = new UserInfo();
 		user.setName(name);
 		return user;

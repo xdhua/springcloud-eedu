@@ -32,14 +32,15 @@ public class CaptchaUtil {
     // 验证码默认位数
     private static final int DEFAULT_LEN = 5;
     
-    private static final String TEST_CODE = "1111111111111";
+    // 图片code验证
+    private static final String IMAGE_CODE = "image-code";
     
     @Autowired
-    private static WebUserCache webCache;
+    private static WebUserCache webUserCache;
     
     static {
-    	if(null == webCache) {
-    		webCache = new WebUserConCurrentMapCache(new ConcurrentHashMap<String, Object>());
+    	if(null == webUserCache) {
+    		webUserCache = new WebUserConCurrentMapCache(new ConcurrentHashMap<String, Object>());
     	}
     }
 
@@ -100,7 +101,7 @@ public class CaptchaUtil {
      * @return
      */
     public static boolean verify(String code) {
-        String testCode = (String)webCache.get(TEST_CODE);
+        String testCode = (String)webUserCache.get(IMAGE_CODE);
         return StringUtils.equalsIgnoreCase(code, testCode);
     }
 
@@ -121,7 +122,7 @@ public class CaptchaUtil {
         }
 //        	TODO;  将生成的 验证码存入内存
 //        captcha.text(); 验证码内容
-        webCache.put(TEST_CODE, captcha.text());
+        webUserCache.put(IMAGE_CODE, captcha.text());
         captcha.out(response.getOutputStream());
     }
 

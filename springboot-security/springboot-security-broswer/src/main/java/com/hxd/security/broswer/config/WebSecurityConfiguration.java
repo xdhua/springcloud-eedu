@@ -14,9 +14,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
-import com.hxd.security.broswer.handler.FailHandler;
-import com.hxd.security.broswer.handler.SuccessHandler;
+import com.hxd.security.core.config.WebPeripheralAuthenticationConfig;
 import com.hxd.security.core.filter.ImageCodeFilter;
+import com.hxd.security.core.handler.SuccessHandler;
+import com.hxd.security.core.handler.FailureHandler;
 import com.hxd.security.core.properties.SecurityProperties;
 
 /**
@@ -43,7 +44,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	 *  将自定义验证失败后操作注入
 	 */
 	@Autowired
-	private FailHandler FailHandler;
+	private FailureHandler failureHandler;
 	
 	/**
 	 * BCrypt密码编码器
@@ -72,6 +73,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
+	@Autowired
+	private WebPeripheralAuthenticationConfig webPeripheralAuthenticationConfig;
+	
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -80,12 +84,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.loginPage("/redirect/handler")  //所有没有验证的请求 都跳转到当前url中
 			.loginProcessingUrl("/test/user/login") // 替换掉默认/login post操作请求到服务器
 			.successHandler(successHandler) // 设置验证成功后 操作
-			.failureHandler(FailHandler) // 验证失败后操作
+			.failureHandler(failureHandler) // 验证失败后操作
 			.and()
 		.rememberMe() //设置记住我
 		.rememberMeParameter("rememberMe") // 设置请求参数 为rememberMe 默认为remember-me
 			.tokenRepository(persistentTokenRepository()) // 设置 记住我的持久化仓库
-			.tokenValiditySeconds(50) // 设置 记住我时间
+			.tokenValiditySeconds(60 * 60) // 设置 记住我时间
 			.userDetailsService(userDetailsService)  // 设置获取userDetails service
 //		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 禁用session
 //		.and()
@@ -98,5 +102,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				"/images/captcha").permitAll() // 添加不需要验证的路径
 		// 除上面外的所有请求全部需要鉴权认证
 		.anyRequest().authenticated();
+		// 添加 外部config
+		httpSecurity.apply(webPeripheralAuthenticationConfig);
 	}
 }
