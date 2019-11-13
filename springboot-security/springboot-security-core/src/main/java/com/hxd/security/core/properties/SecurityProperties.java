@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  *  配置信息
+ *  注意 如果是boolean 对象 那么不要用is 开头要不无法注入
  * @author hxd
  *
  * 2019年11月7日
