@@ -27,7 +27,7 @@ public interface WebUserCache {
 	 *  从当前内存移除相应数据
 	 * @param key
 	 */
-	void remove(String key);
+	Object remove(String key);
 	
 	/**
 	 * 清空内存

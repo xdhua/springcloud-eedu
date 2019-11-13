@@ -26,8 +26,8 @@ public class WebUserNullCache implements WebUserCache {
 	}
 
 	@Override
-	public void remove(String key) {
-		
+	public Object remove(String key) {
+		return null;
 	}
 
 	@Override

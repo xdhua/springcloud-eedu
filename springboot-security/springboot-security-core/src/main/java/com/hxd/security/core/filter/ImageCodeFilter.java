@@ -34,7 +34,8 @@ public class ImageCodeFilter extends OncePerRequestFilter {
 		//  图片验证码  是否有效
 		if(org.apache.commons.lang3.StringUtils.equals(request.getRequestURI(), "/test/user/login")) {
 			String imagecode = request.getParameter("imagecode");
-			if(CaptchaUtil.verify(imagecode)) {
+			String username = request.getParameter("username");
+			if(CaptchaUtil.verify(imagecode, username)) {
 				filterChain.doFilter(request, response);
 			} else {
 				response.setContentType("application/json;charset=UTF-8");

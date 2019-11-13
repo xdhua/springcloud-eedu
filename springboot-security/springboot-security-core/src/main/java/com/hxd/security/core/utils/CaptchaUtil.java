@@ -2,6 +2,7 @@ package com.hxd.security.core.utils;
 
 import java.awt.Font;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hxd.security.core.cache.WebUserCache;
 import com.hxd.security.core.cache.WebUserConCurrentMapCache;
+import com.hxd.security.core.validation.ValidateCodeInfo;
 import com.wf.captcha.GifCaptcha;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
@@ -31,9 +33,6 @@ public class CaptchaUtil {
     private static final int DEFAULT_WIDTH = 130;
     // 验证码默认位数
     private static final int DEFAULT_LEN = 5;
-    
-    // 图片code验证
-    private static final String IMAGE_CODE = "image-code";
     
     @Autowired
     private static WebUserCache webUserCache;
@@ -100,9 +99,16 @@ public class CaptchaUtil {
      * @param request
      * @return
      */
-    public static boolean verify(String code) {
-        String testCode = (String)webUserCache.get(IMAGE_CODE);
-        return StringUtils.equalsIgnoreCase(code, testCode);
+    public static boolean verify(String code,String key) {
+    	if(webUserCache.containsKey(key)) {
+    		ValidateCodeInfo info = (ValidateCodeInfo)webUserCache.remove(key);
+    		if(LocalDateTime.now().isAfter(info.getDeadline())) {
+    			return false;
+    		}
+            return StringUtils.equalsIgnoreCase(code, info.getCode());
+    	}else {
+    		return false;
+    	}
     }
 
     private static void outCaptcha(int width, int height, int len, Font font, int cType, Integer vType, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -122,7 +128,9 @@ public class CaptchaUtil {
         }
 //        	TODO;  将生成的 验证码存入内存
 //        captcha.text(); 验证码内容
-        webUserCache.put(IMAGE_CODE, captcha.text());
+        String username = request.getParameter("username");
+        ValidateCodeInfo info = new ValidateCodeInfo(captcha.text(), 180);
+        webUserCache.put(username, info);
         captcha.out(response.getOutputStream());
     }
 

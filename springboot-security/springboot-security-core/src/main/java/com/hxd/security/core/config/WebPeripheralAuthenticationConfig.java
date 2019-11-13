@@ -1,5 +1,6 @@
 package com.hxd.security.core.config;
 
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -20,6 +19,7 @@ import com.hxd.security.core.cache.WebUserCache;
 import com.hxd.security.core.cache.WebUserConCurrentMapCache;
 import com.hxd.security.core.handler.FailureHandler;
 import com.hxd.security.core.handler.SuccessHandler;
+import com.hxd.security.core.validation.ValidateUserCodeInfo;
 
 /**
  *  设置config 文件配置
@@ -47,10 +47,10 @@ public class WebPeripheralAuthenticationConfig extends SecurityConfigurerAdapter
 	private UserDetailsService userDetailsService;
 	
 	@Bean
-	private WebUserCache cache() {
+	private WebUserCache webUserCache() {
 		ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<String, Object>();
-		User user = new User("15718884785","",AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
-		map.put("15718884785", user);
+		ValidateUserCodeInfo info = new ValidateUserCodeInfo("15718884785", "1571888", new HashSet<>());
+		map.put("15718884785_sms_login", info);
 		return new WebUserConCurrentMapCache(map);
 	}
 
@@ -64,7 +64,7 @@ public class WebPeripheralAuthenticationConfig extends SecurityConfigurerAdapter
 
 		PeripheralAuthenticationProvider peripheralAuthenticationProvider = new PeripheralAuthenticationProvider();
 		peripheralAuthenticationProvider.setUserDetailsService(userDetailsService);
-		peripheralAuthenticationProvider.setWebUserCache(cache());
+		peripheralAuthenticationProvider.setWebUserCache(webUserCache());
 
 		// 将自定义的provider 加入到Spring  provider 列表中
 		http.authenticationProvider(peripheralAuthenticationProvider)

@@ -34,9 +34,8 @@ public class WebUserConCurrentMapCache implements WebUserCache {
 	}
 
 	@Override
-	public void remove(String key) {
-		this.store.remove(key);
-		
+	public Object remove(String key) {
+		return this.store.remove(key);
 	}
 
 	@Override

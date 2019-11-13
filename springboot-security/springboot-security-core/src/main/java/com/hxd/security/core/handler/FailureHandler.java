@@ -38,7 +38,7 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 		// 当前 验证失败是返回json 对象还是 延用 默认逻辑  进行页面跳转
 		if(securityProperties.isReturnJson()) {
 			response.setContentType("application/json;charset=UTF-8");
-			response.getWriter().write(objectMapper.writeValueAsString(exception));
+			response.getWriter().write(objectMapper.writeValueAsString(exception.getMessage()));
 		}else {
 			super.onAuthenticationFailure(request, response, exception);
 		}

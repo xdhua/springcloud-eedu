@@ -17,7 +17,8 @@ public class SecurityProperties {
 	
 	private String loginUrl = "/login.html";
 	
-	private boolean isReturnJson;
+	private boolean returnJson;
+	
 	
 	public String getLoginUrl() {
 		return loginUrl;
@@ -27,17 +28,17 @@ public class SecurityProperties {
 		this.loginUrl = loginUrl;
 	}
 	
+	public boolean isReturnJson() {
+		return returnJson;
+	}
+
+	public void setReturnJson(boolean returnJson) {
+		this.returnJson = returnJson;
+	}
+
 	@Override
 	public String toString() {
 		return "SecurityProperties [loginUrl=" + loginUrl + "]";
-	}
-
-	public boolean isReturnJson() {
-		return isReturnJson;
-	}
-
-	public void setReturnJson(boolean isReturnJson) {
-		this.isReturnJson = isReturnJson;
 	}
 
 }
