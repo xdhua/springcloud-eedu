@@ -11,13 +11,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import com.hxd.security.core.config.WebPeripheralAuthenticationConfig;
 import com.hxd.security.core.filter.ImageCodeFilter;
-import com.hxd.security.core.handler.SuccessHandler;
 import com.hxd.security.core.handler.FailureHandler;
+import com.hxd.security.core.handler.SuccessHandler;
 import com.hxd.security.core.properties.SecurityProperties;
 
 /**
@@ -76,6 +77,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private WebPeripheralAuthenticationConfig webPeripheralAuthenticationConfig;
 	
+	@Autowired
+	private LogoutSuccessHandler logoutSuccessHandler;
+	
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -91,6 +95,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.tokenRepository(persistentTokenRepository()) // 设置 记住我的持久化仓库
 			.tokenValiditySeconds(60 * 60) // 设置 记住我时间
 			.userDetailsService(userDetailsService)  // 设置获取userDetails service
+			.and()
+		.logout()
+		.logoutSuccessHandler(logoutSuccessHandler)
 //		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 禁用session
 //		.and()
 //		.cors().and() // 跨域
@@ -102,6 +109,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				"/images/captcha").permitAll() // 添加不需要验证的路径
 		// 除上面外的所有请求全部需要鉴权认证
 		.anyRequest().authenticated();
+		
 		// 添加 外部config
 		httpSecurity.apply(webPeripheralAuthenticationConfig);
 	}

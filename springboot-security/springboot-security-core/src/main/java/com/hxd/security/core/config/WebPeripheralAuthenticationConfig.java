@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import com.hxd.security.core.authentication.PeripheralAuthenticationFilter;
@@ -19,6 +21,8 @@ import com.hxd.security.core.cache.WebUserCache;
 import com.hxd.security.core.cache.WebUserConCurrentMapCache;
 import com.hxd.security.core.handler.FailureHandler;
 import com.hxd.security.core.handler.SuccessHandler;
+import com.hxd.security.core.handler.UserLogoutSuccessHandler;
+import com.hxd.security.core.properties.SecurityProperties;
 import com.hxd.security.core.validation.ValidateUserCodeInfo;
 
 /**
@@ -46,12 +50,21 @@ public class WebPeripheralAuthenticationConfig extends SecurityConfigurerAdapter
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
+	@Autowired
+	private SecurityProperties securityProperties;
+	
 	@Bean
 	private WebUserCache webUserCache() {
 		ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<String, Object>();
 		ValidateUserCodeInfo info = new ValidateUserCodeInfo("15718884785", "1571888", new HashSet<>());
 		map.put("15718884785_sms_login", info);
 		return new WebUserConCurrentMapCache(map);
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean(UserLogoutSuccessHandler.class)
+	private LogoutSuccessHandler logoutSuccessHandler() {
+		return new UserLogoutSuccessHandler(securityProperties);
 	}
 
 	@Override
