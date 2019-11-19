@@ -5,6 +5,8 @@ package com.hxd.security.core.cache;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.stereotype.Component;
+
 
 
 /**
@@ -14,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * date 2019年11月8日
  * 
  */
+@Component("webUserCache")
 public class WebUserConCurrentMapCache implements WebUserCache {
 	
 	private final ConcurrentHashMap<String, Object> store;

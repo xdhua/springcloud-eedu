@@ -1,5 +1,6 @@
 package com.hxd.security.broswer.config;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import com.hxd.security.core.cache.WebUserCache;
 import com.hxd.security.core.config.WebPeripheralAuthenticationConfig;
 import com.hxd.security.core.filter.ImageCodeFilter;
 import com.hxd.security.core.handler.FailureHandler;
@@ -80,10 +82,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private LogoutSuccessHandler logoutSuccessHandler;
 	
+	@Autowired
+	private WebUserCache webUserCache;
+	
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.addFilterBefore(new ImageCodeFilter(), UsernamePasswordAuthenticationFilter.class)  // 将自定义Filter 加在UsernamePasswordAuthenticationFilter 之前 
+		httpSecurity.addFilterBefore(new ImageCodeFilter(webUserCache), UsernamePasswordAuthenticationFilter.class)  // 将自定义Filter 加在UsernamePasswordAuthenticationFilter 之前 
 		.formLogin()
 			.loginPage("/redirect/handler")  //所有没有验证的请求 都跳转到当前url中
 			.loginProcessingUrl("/test/user/login") // 替换掉默认/login post操作请求到服务器
@@ -106,6 +111,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 		.antMatchers("/redirect/handler",
 				securityProperties.getLoginUrl(),
+				"/test/user/login",
 				"/images/captcha").permitAll() // 添加不需要验证的路径
 		// 除上面外的所有请求全部需要鉴权认证
 		.anyRequest().authenticated();

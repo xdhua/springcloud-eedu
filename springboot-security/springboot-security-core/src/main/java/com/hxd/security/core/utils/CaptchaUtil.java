@@ -2,18 +2,10 @@ package com.hxd.security.core.utils;
 
 import java.awt.Font;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.hxd.security.core.cache.WebUserCache;
-import com.hxd.security.core.cache.WebUserConCurrentMapCache;
-import com.hxd.security.core.validation.ValidateCodeInfo;
 import com.wf.captcha.GifCaptcha;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
@@ -34,15 +26,7 @@ public class CaptchaUtil {
     // 验证码默认位数
     private static final int DEFAULT_LEN = 5;
     
-    @Autowired
-    private static WebUserCache webUserCache;
     
-    static {
-    	if(null == webUserCache) {
-    		webUserCache = new WebUserConCurrentMapCache(new ConcurrentHashMap<String, Object>());
-    	}
-    }
-
     public static void out(HttpServletRequest request, HttpServletResponse response) throws IOException {
         out(DEFAULT_LEN, request, response);
     }
@@ -59,8 +43,8 @@ public class CaptchaUtil {
         out(width, height, len, vType, null, request, response);
     }
 
-    public static void out(int width, int height, int len, Integer vType, Font font, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        outCaptcha(width, height, len, font, GIF_TYPE, vType, request, response);
+    public static Captcha out(int width, int height, int len, Integer vType, Font font, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return outCaptcha(width, height, len, font, GIF_TYPE, vType, response);
     }
 
     public static void outPng(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -85,33 +69,16 @@ public class CaptchaUtil {
      * @param response response
      * @throws IOException  异常信息
      */
-    public static void outPng(int width, int height, int len, Integer vType, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        outPng(width, height, len, vType, null, request, response);
+    public static Captcha outPng(int width, int height, int len, Integer vType, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return outPng(width, height, len, vType, null, request, response);
     }
 
-    public static void outPng(int width, int height, int len, Integer vType, Font font, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        outCaptcha(width, height, len, font, PNG_TYPE, vType, request, response);
+    public static Captcha outPng(int width, int height, int len, Integer vType, Font font, HttpServletRequest request, HttpServletResponse response) throws IOException {
+       return outCaptcha(width, height, len, font, PNG_TYPE, vType, response);
     }
 
-    /**
-     *   验证 验证码是否正确
-     * @param code
-     * @param request
-     * @return
-     */
-    public static boolean verify(String code,String key) {
-    	if(webUserCache.containsKey(key)) {
-    		ValidateCodeInfo info = (ValidateCodeInfo)webUserCache.remove(key);
-    		if(LocalDateTime.now().isAfter(info.getDeadline())) {
-    			return false;
-    		}
-            return StringUtils.equalsIgnoreCase(code, info.getCode());
-    	}else {
-    		return false;
-    	}
-    }
 
-    private static void outCaptcha(int width, int height, int len, Font font, int cType, Integer vType, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private static Captcha outCaptcha(int width, int height, int len, Font font, int cType, Integer vType,  HttpServletResponse response) throws IOException {
         setHeader(response, cType);
         Captcha captcha = null;
 //        是否设置为动态验证码
@@ -128,10 +95,7 @@ public class CaptchaUtil {
         }
 //        	TODO;  将生成的 验证码存入内存
 //        captcha.text(); 验证码内容
-        String username = request.getParameter("username");
-        ValidateCodeInfo info = new ValidateCodeInfo(captcha.text(), 180);
-        webUserCache.put(username, info);
-        captcha.out(response.getOutputStream());
+        return captcha;
     }
 
     /**
