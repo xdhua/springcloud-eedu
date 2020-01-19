@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 获取第三方登录信息的  当期登录用户信息
+ * AbstractOAuth2ApiBinding  实现ApiBinding 的抽象类
  * @author hxd
  *
  * date 2019年11月19日

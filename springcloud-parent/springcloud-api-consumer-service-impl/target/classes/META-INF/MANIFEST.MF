@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: springcloud-api-consumer-service-impl
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: hxd
+Built-By: admin
 Implementation-Vendor-Id: com.hxd
-Build-Jdk: 1.8.0_202
+Build-Jdk: 1.8.0_191
 Implementation-URL: http://maven.apache.org/springcloud-api-consumer-s
  ervice-impl
 Created-By: Maven Integration for Eclipse
